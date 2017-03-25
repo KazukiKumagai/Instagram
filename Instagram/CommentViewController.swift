@@ -37,9 +37,10 @@ class CommentViewController: UIViewController {
 
         
         // Firebaseに保存するデータの準備
-        if (FIRAuth.auth()?.currentUser?.uid) != nil {
-            if commentTextField.text != nil {
-                postData.caption = postData.caption! + "\n" + "[" + dateString + "]" + postData.name! + ":"+commentTextField.text!
+        if (FIRAuth.auth()?.currentUser?.displayName) != nil {
+            let displayName:String = (FIRAuth.auth()?.currentUser?.displayName)!
+            if commentTextField.text != "" {
+                postData.caption = postData.caption! + "\n" + "[" + dateString + "]" + displayName + ":"+commentTextField.text!
                 // コメントをFirebaseに保存する
                 let postRef = FIRDatabase.database().reference().child(Const.PostPath).child(postData.id!)
                 let captions = ["caption": postData.caption]
@@ -48,6 +49,8 @@ class CommentViewController: UIViewController {
                 // HUDで完了を知らせる
                 SVProgressHUD.showSuccess(withStatus: "コメントを完了しました")
                 commentLabel.text = postData.caption!
+            }else{
+                SVProgressHUD.showError(withStatus: "コメントを入力してください")
             }
             
         }
